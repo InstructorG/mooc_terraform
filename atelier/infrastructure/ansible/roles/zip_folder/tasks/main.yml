@@ -1,0 +1,6 @@
+
+
+- name: Archive le contenu du dossier source dans le dossier cible
+  command: zip -j -r "{{  dossier_source }}" .
+  args:
+    chdir: "{{  dossier_cible }}"

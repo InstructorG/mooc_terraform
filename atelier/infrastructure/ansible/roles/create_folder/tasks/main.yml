@@ -1,0 +1,6 @@
+
+
+- name: Créer le dossier build s'il n'existe pas
+  file:
+    path: "{{ dossier }}"
+    state: directory
