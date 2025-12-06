@@ -1,4 +1,3 @@
-````markdown
 # Demo – Découvrir AWS avec la console et l’AWS CLI
 
 ## Objectifs
@@ -28,8 +27,7 @@ Cette démo est découpée en deux grandes parties :
 
 ### 1. Connexion à la console AWS
 
-1. Accédez à l’URL de la console AWS :  
-   `https://console.aws.amazon.com/`
+1. Accédez à l’URL de la console AWS : https://console.aws.amazon.com/
 2. Connectez-vous avec vos identifiants :
    - Soit un compte root (à éviter en production).
    - Soit un utilisateur IAM doté de permissions suffisantes.
@@ -44,9 +42,7 @@ Note : La région impacte les ressources visibles (S3, Lambda, etc.).
 Objectif : comprendre le stockage d’objets dans AWS.
 
 1. Dans la barre de recherche de la console, tapez `S3` et ouvrez le service.
-2. Liste des buckets :
-   - Observez les buckets existants.
-   - Notez le nom globalement unique des buckets.
+2. Liste des buckets 
 3. Créer un bucket (optionnel, si vous avez les droits) :
    - Cliquez sur `Create bucket`.
    - Donnez un nom unique (ex. `demo-console-s3-votre-nom`).
@@ -83,6 +79,58 @@ Objectif : voir comment exécuter du code sans gérer de serveur.
    - Créez un nouvel évènement de test par défaut et exécutez.
    - Observez le résultat dans les logs (console de sortie, logs CloudWatch).
 
+
+
+```python
+import os
+import json
+import boto3
+from botocore.exceptions import ClientError
+
+s3 = boto3.client("s3")
+
+def lambda_handler(event, context):
+    # 1) Récupération bucket/key depuis event ou env
+    bucket = (event or {}).get("bucket") or os.environ.get("BUCKET_NAME")
+    key = (event or {}).get("key") or os.environ.get("CSV_KEY")
+
+    if not bucket or not key:
+        return {
+            "statusCode": 400,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({
+                "error": "Missing 'bucket'/'key' in event or BUCKET_NAME/CSV_KEY in environment."
+            })
+        }
+
+    # 2) Lecture de l'objet S3
+    obj = s3.get_object(Bucket=bucket, Key=key)
+    raw = obj["Body"].read()
+
+    # 3) Décodage (UTF-8 par défaut)
+    # Si ton CSV est dans un autre encodage, adapte ici.
+    csv_text = raw.decode("utf-8")
+
+    # 4) Renvoi du CSV en réponse
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "text/plain; charset=utf-8"
+            # ou "text/csv; charset=utf-8" si tu préfères
+        },
+        "body": csv_text
+    }
+```
+
+```json
+{
+  "bucket": "demo-bucket-12343404094",
+  "key": "plantes.csv"
+}
+```
+
+
+
 ---
 
 ### 4. Découverte de IAM (Identity and Access Management)
@@ -102,22 +150,18 @@ Objectif : comprendre la gestion des identités et permissions.
 
 Idée clé : IAM contrôle qui peut faire quoi, sur quelles ressources.
 
----
-
-### 5. Découverte d’Amazon API Gateway
-
-Objectif : voir comment exposer des API HTTP/REST.
-
-1. Dans la barre de recherche, tapez `API Gateway` et ouvrez le service.
-2. Types d’API :
-   - `REST APIs`, `HTTP APIs`, `WebSocket APIs`.
-3. Exemple de création rapide (optionnel) :
-   - Créez une API HTTP minimaliste.
-   - Si une Lambda existe, vous pouvez configurer une intégration vers cette Lambda.
-4. Notez :
-   - Les routes (endpoints).
-   - Le déploiement de l’API.
-   - L’URL d’invocation de l’API générée par API Gateway.
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "arn:aws:s3:::mon-bucket/*"
+    }
+  ]
+}
+```
 
 ---
 
@@ -232,20 +276,3 @@ Autres tests possibles :
   ```bash
   aws lambda list-functions --region eu-west-1 --profile demo-aws
   ```
-
----
-
-## Conclusion
-
-À l’issue de cette démo, vous aurez :
-
-* Exploré les principaux services AWS via la console : S3, Lambda, IAM, API Gateway.
-* Installé l’AWS CLI en local.
-* Initialisé un profil AWS relié à un compte.
-* Validé votre accès avec des commandes simples (`sts`, `s3`, `lambda`).
-
-Ce socle vous permet ensuite d’enchaîner sur des ateliers plus avancés (Terraform, CI/CD, automatisation, etc.).
-
-```
-::contentReference[oaicite:0]{index=0}
-```
