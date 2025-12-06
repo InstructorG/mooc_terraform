@@ -7,7 +7,7 @@ resource "random_string" "random" {
 
 #TODO : IMPORT KMS alias/student-main-key
 data "aws_kms_key" "kms_key" {
-  key_id = "alias/student-main-key"
+  key_id = "alias/alias/student-main-key"
 }
 
 

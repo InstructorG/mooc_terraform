@@ -1,3 +1,5 @@
+
+
 run "valid_names" {
 
   command = plan
@@ -7,10 +9,10 @@ run "valid_names" {
   }
 
   variables  {
-    bucket_name  = "bucket-test"
-    lambda_name  = "lambda-test"
-    code_archive = "../../data/lambda.zip"
-  }
+  bucket_name  = "bucket-test"
+  lambda_name  = "lambda-test"
+  code_archive = "../../data/lambda.zip"
+}
 
 
   assert {

@@ -25,8 +25,11 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_iam_role" "iam_for_lambda" {
   name               = "iam_for_lambda-${random_string.random.result}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
-  inline_policy {
-    name = "my_inline_policy"
+}
+
+resource "aws_iam_role_policy" "policy_one" {
+  name = "plicy_for_lambda-${random_string.random.result}"
+  role = aws_iam_role.iam_for_lambda.id
 
     policy = jsonencode({
       Version   = "2012-10-17"
@@ -41,18 +44,7 @@ resource "aws_iam_role" "iam_for_lambda" {
         },
       ]
     })
-  }
 }
-
-resource "aws_lambda_permission" "allow_bucket" {
-  statement_id  = "AllowExecutionFromS3Bucket"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.func.arn
-  principal     = "s3.amazonaws.com"
-  source_arn    = aws_s3_bucket.s3_module.arn
-}
-
-
 
 resource "aws_lambda_function" "func" {
   function_name = var.lambda_name
@@ -60,6 +52,15 @@ resource "aws_lambda_function" "func" {
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.10"
+}
+
+
+resource "aws_lambda_permission" "allow_bucket" {
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.func.arn
+  principal     = "s3.amazonaws.com"
+  source_arn    = aws_s3_bucket.s3_module.arn
 }
 
 
