@@ -24,9 +24,5 @@ Dans cette première partie, nous allons créer une application front avec un ba
 
 ![porject_architecture.png](docs%2Fporject_architecture.png)
 
-Structure du projet
-
-![arbo.png](docs/arbo.png)
-
 
 - [ATELIER: Application Trois tiers](atelier/Readme.md)

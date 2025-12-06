@@ -6,11 +6,11 @@ Dans cette première partie, nous allons créer une application front avec un ba
   - Dans une perspective de déploiement avec une CI/CD, Ansible sera utilisé pour décompresser le zip du front avant de le déployer.
 - **Terraform** va nous permettre de créer l'ensemble de l'infrastructure décrite dans le schéma ci-dessous :
 
-![porject_architecture.png](docs%2Fporject_architecture.png)
+![porject_architecture.png](../docs/porject_architecture.png)
 
 Structure du projet
 
-![arbo.png](docs/arbo.png)
+![arbo.png](../docs/arbo.png)
 
 ## Partie 1 : Packaging avec Ansible
 
