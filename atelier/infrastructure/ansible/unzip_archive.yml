@@ -1,0 +1,9 @@
+---
+- name: Créer des archives pour le front et le backend
+  hosts: localhost
+  vars_files:
+    - "vars/main.yml"
+
+  tasks:
+    - ...
+

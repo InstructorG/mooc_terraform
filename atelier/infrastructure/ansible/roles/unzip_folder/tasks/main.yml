@@ -1,0 +1,6 @@
+
+
+- name: Décompresse le contenu du dossier_source dans le dossier cible
+  command: unzip -o "{{ dossier_source }}" -d "{{ dossier_cible }}"
+  args:
+    chdir: "{{ emplacement }}"

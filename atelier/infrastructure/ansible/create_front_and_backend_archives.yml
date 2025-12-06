@@ -1,0 +1,16 @@
+---
+- name: Créer des archives pour le front et le backend
+  hosts: localhost
+  vars_files:
+    - "vars/main.yml"
+
+  tasks:
+    # Ajouter le role pour créer le dossier build
+    - ...
+
+    # Ajouter le role pour créer une archive avec le code du backend
+    - ...
+
+    # Ajouter le role pour créer une archive avec le code du front
+    - ...
+
