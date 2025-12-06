@@ -2,17 +2,12 @@
 
 run "valid_names" {
 
-  command = plan
 
-  module {
-    source = "./module"
-  }
+  #TODO : Preciser le commande
 
-  variables  {
-  bucket_name  = "bucket-test"
-  lambda_name  = "lambda-test"
-  code_archive = "../../data/lambda.zip"
-}
+  #TODO : Preciser le module
+
+  #TODO : Preciser les variables en input
 
 
   assert {

@@ -29,7 +29,14 @@ resource "aws_s3_bucket" "s3_module" {
   bucket        = var.bucket_name
   force_destroy = true
 }
+```
 
+
+### 2.  Dans le fichier "main.tf", nous souhaitons :
+
+Créer une fonction Lambda.
+
+```terraform
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
@@ -42,14 +49,7 @@ data "aws_iam_policy_document" "assume_role" {
     actions = ["sts:AssumeRole"]
   }
 }
-```
 
-
-### 2.  Dans le fichier "main.tf", nous souhaitons :
-
-Créer une fonction Lambda.
-
-```terraform
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
