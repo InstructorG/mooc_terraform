@@ -1,34 +1,120 @@
-name: BUILD WHEN PUSH ON BRANCH
-run-name: BUILDING BRANCH ${{ github.ref }}
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-      - 'main'
+      - '*'
 
 jobs:
-  package:
+  ci:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - run: |
-          cd demo_7/data && zip lambda.zip lambda_function.py
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      #TODO : Installation des dépendances.
+      - name: Install Python dependencies
+        working-directory: atelier/code
+        run: |
+          pip install -r requirements.txt
+
+      #TODO : Exécution des tests.
+      - name: Run Python tests
+        working-directory: atelier/code/test
+        run: |
+          pytest .
+
+      - name: Set version variable
+        id: version
+        run: |
+          # Utilise la date pour générer une version (ex: 2025032010)
+          VERSION=$(date +%Y%m%d)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "Version set to $VERSION"
+
+      - name: Install Ansible and unzip
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible unzip
+
+      #TODO : Ajouter la commande pour générer les archives.
+      - name: Run Ansible playbook to generate ZIPs
+        run: |
+          ansible-playbook atelier/infrastructure/ansible/create_front_and_backend_archives.yml -e version=${{ env.VERSION }}
+
+      #TODO : Charger le zip du backend dans les artifacts.
+      - name: Upload backend ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-zip-${{ env.VERSION }}
+          path: atelier/build/backend-${{ env.VERSION }}.zip
+
+      #TODO : Charger le zip du front dans les artifacts.
+      - name: Upload front ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: front-zip-${{ env.VERSION }}
+          path: atelier/build/front-${{ env.VERSION }}.zip
 
 
-  deploy:
+  cd:
     runs-on: ubuntu-latest
-    needs: package
-
+    needs: ci
     steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
-      - run: |
-           cd demo_7 && terraform init
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - run: |
-          cd demo_7 && terraform test
+      - name: Set version variable
+        id: version
+        run: |
+          # Utilise la date pour générer une version (ex: 2025032010)
+          VERSION=$(date +%Y%m%d)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "Version set to $VERSION"
 
-      - run: |
-           cd demo_7 && terraform apply -auto-approve
+      #TODO : Récupérer le zip du backend.
+      - name: Download backend ZIP artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-zip-${{ env.VERSION }}
+          path: atelier/build
+
+      #TODO : Récupérer le zip du front.
+      - name: Download front ZIP artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: front-zip-${{ env.VERSION }}
+          path: atelier/build
+
+      - name: Install Ansible and unzip
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible unzip
+
+      #TODO : Exécuter la commande Ansible pour décompresser l'archive du front.
+      - name: Run Ansible playbook to generate ZIPs
+        run: |
+          ansible-playbook atelier/infrastructure/ansible/unzip_archive.yml -e version=${VERSION}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.3.9'
+
+      - name: Terraform Init
+        working-directory: atelier/infrastructure/terraform
+        run: terraform init
+
+      #TODO : Executer la commande terraform pour simuler la creation de l'infrastructure
+      - name: Terraform Plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        working-directory: atelier/infrastructure/terraform
+        run: terraform plan -var version_backend=${{ env.VERSION }}

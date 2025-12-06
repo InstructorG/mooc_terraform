@@ -5,5 +5,5 @@ output "api_url" {
 
 # TODO: Changer avec le nom du bucket
 output "s3_url" {
-  value = "https://${aws_s3_bucket.front_bucket.bucket}.s3.eu-west-3.amazonaws.com/index.html"
+  value = "https://${aws_s3_bucket.front_bucket.bucket}.s3.eu-central-1.amazonaws.com/index.html"
 }
