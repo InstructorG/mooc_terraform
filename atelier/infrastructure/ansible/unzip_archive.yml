@@ -5,5 +5,10 @@
     - "vars/main.yml"
 
   tasks:
-    - ...
+    - include_role:
+        name: "unzip_folder"
+      vars:
+        dossier_source: "./front-{{ version }}.zip"
+        dossier_cible: "./front_extracted"
+        emplacement: "../../build"
 

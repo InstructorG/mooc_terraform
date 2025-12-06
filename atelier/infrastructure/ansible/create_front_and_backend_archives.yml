@@ -6,11 +6,22 @@
 
   tasks:
     # Ajouter le role pour créer le dossier build
-    - ...
+    # Ajouter le role pour créer le dossier build
+    - include_role:
+        name: "create_folder"
+      vars:
+        dossier: "../../build"
 
     # Ajouter le role pour créer une archive avec le code du backend
-    - ...
+    - include_role:
+        name: "zip_folder"
+      vars:
+        dossier_source: "../../build/backend-{{ version }}.zip"
+        dossier_cible: "../../code/backend"
 
     # Ajouter le role pour créer une archive avec le code du front
-    - ...
-
+    - include_role:
+        name: "zip_folder"
+      vars:
+        dossier_source: "../../build/front-{{ version }}.zip"
+        dossier_cible: "../../code/front"

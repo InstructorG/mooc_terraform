@@ -1,10 +1,9 @@
-resource "local_file" "first_file" {
-  content = "THIS IS A TEST"
+resource local_file "file_1" {
+  content = "THIS IS FILE 1"
   filename = "file_1.txt"
 }
 
-
-resource "local_file" "second_file" {
-  content = "THIS IS A TEST"
-  filename = "./directory/file_2.txt"
+resource "local_file" "file_2" {
+  filename = "directory/file_2.txt"
+  content = "THIS IS FILE 2"
 }
