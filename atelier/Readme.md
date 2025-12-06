@@ -142,3 +142,15 @@ module "api_gateway" {
 
 10. Relancez l'exécution avec la commande `terraform apply` et testez si tout fonctionne correctement.
 
+----
+
+## Partie 3 (Optionnel) : Executer un workflow  CI/CD avec githubaction
+
+Dans cette seconde partie, nous allons créer un pipeline CI/CD en utilisant GitHub Actions.
+Ce pipeline nous permettra de simuler une chaîne complète d'intégration continue.
+
+Dans le fichier .github/workflows/workflow.yml, nous allons créer deux jobs : ci et cd.
+
+Le job ci va permettre de gérer l'intégration continue, tandis que le job cd assurera le déploiement continu.
+
+![img.png](../docs/github_action.png)

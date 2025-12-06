@@ -49,11 +49,11 @@ On n’“importe” pas la clé au sens Terraform state, mais on la **référen
 
 ```hcl
 data "aws_kms_key" "kms_key" {
-  key_id = "alias/student-main-key"
+  key_id = "alias/alias/student-main-key"
 }
 ```
 
-Ce bloc recherche sur AWS la clé KMS ayant l’alias `alias/student-main-key`.
+Ce bloc recherche sur AWS la clé KMS ayant l’alias `alias/alias/student-main-key`.
 Elle sera ensuite réutilisable via `data.aws_kms_key.student_main_key.arn`.
 
 ---

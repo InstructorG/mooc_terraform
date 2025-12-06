@@ -16,11 +16,11 @@
 Créez un fichier de test avec les propriétés suivantes :
 
 * Testez avec la méthode "plan".
-* Testez le module de l'atelier 4 situé dans le répertoire "module".
+* Testez le module de la demo 6  situé dans le répertoire "module".
 * Spécifiez une variable "bucket_name" et vérifiez que le nom du compartiment qui sera créé par le module a la même valeur.
 * Spécifiez une variable "lambda_name" et vérifiez que le nom de la fonction Lambda qui sera créée par le module a la même valeur.
 
-Crée un fichier de test, par exemple module_atelier_4.tftest.hcl à la racine du projet (au même niveau que le répertoire module/) :
+Crée un fichier de test au même niveau que le répertoire module :
 
 ```hcl
 run "valid_names" {
@@ -61,7 +61,7 @@ terraform test
 
 Ce que cette commande va faire :
 
-* Lancer le `run "plan_module_atelier_4"` avec la commande `plan`.
+* Lancer le `run` avec la commande `plan`.
 * Charger le module depuis `./module`.
 * Injecter les variables `bucket_name` et `lambda_name` avec les valeurs de test.
 * Vérifier que :
@@ -71,58 +71,7 @@ Ce que cette commande va faire :
 
 En cas d’échec d’une des conditions, `terraform test` retournera une erreur avec le message fourni dans `error_message`.
 
----
 
-## 2. Modifier le fichier `.github/workflow.yml`
+### 1.3. Voir si le test marche
 
-Modifiez le fichier `.github/workflows/workflow.yml` comme suit :
-
-* Ajoutez la commande d'initialisation de Terraform dans le job deploy.
-* Ajoutez la commande de test de Terraform dans le job deploy.
-* Ajoutez la commande apply de Terraform dans le job deploy.
-
-
-
-Voici un exemple de job `deploy` dans  `.github/workflows/workflow.yml`  :
-
-```yaml
-name: CI/CD Terraform
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout du code
-        uses: actions/checkout@v4
-
-      - name: Installer Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.0
-
-      - name: Initialisation Terraform
-        run: terraform init
-
-      - name: Tests Terraform
-        run: terraform test
-
-      - name: Plan Terraform
-        run: terraform plan
-
-      - name: Apply Terraform
-        if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve
-```
-
-
-Avec ces éléments :
-
-* Les tests (`terraform test`) valident le module avant le déploiement.
-* Si les tests passent, `terraform plan` puis `terraform apply` sont exécutés dans le job `deploy` sur la branche principale.
+Changer la logique du module et verifier si le teste fonctionne toujours 

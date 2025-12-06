@@ -4,8 +4,13 @@ resource "random_string" "random" {
   upper = false
 }
 
+locals {
+  env = "dev"
+  app ="proverb"
+}
+
 resource "aws_s3_bucket" "s3_module" {
-  bucket        = var.bucket_name
+  bucket        = "${var.bucket_name}"
   force_destroy = true
 }
 
@@ -25,8 +30,11 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_iam_role" "iam_for_lambda" {
   name               = "iam_for_lambda-${random_string.random.result}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
-  inline_policy {
-    name = "my_inline_policy"
+}
+
+resource "aws_iam_role_policy" "policy_one" {
+  name = "plicy_for_lambda-${random_string.random.result}"
+  role = aws_iam_role.iam_for_lambda.id
 
     policy = jsonencode({
       Version   = "2012-10-17"
@@ -41,7 +49,6 @@ resource "aws_iam_role" "iam_for_lambda" {
         },
       ]
     })
-  }
 }
 
 resource "aws_lambda_permission" "allow_bucket" {
