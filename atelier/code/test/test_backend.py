@@ -1,4 +1,4 @@
-from backend.lambda_function import read_proverbs
+from code.backend.lambda_function import read_proverbs
 
 
 def test_generation_function():

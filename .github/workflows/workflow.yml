@@ -26,7 +26,7 @@ jobs:
       - name: Run Python tests
         working-directory: atelier/code/test
         run: |
-          pytest .
+          PYTHONPATH=../.. pytest .
 
       - name: Set version variable
         id: version
