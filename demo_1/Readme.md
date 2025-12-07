@@ -8,7 +8,6 @@ Cette démo est découpée en deux grandes parties :
    - Amazon S3
    - AWS Lambda
    - AWS Identity and Access Management (IAM)
-   - Amazon API Gateway
 
 2. Installer l’AWS CLI en local et initialiser un profil AWS pour se connecter à un compte.
 
@@ -17,9 +16,7 @@ Cette démo est découpée en deux grandes parties :
 ## Prérequis
 
 - Un compte AWS (ou un environnement de type sandbox fourni par votre formateur).
-- Un navigateur web récent.
 - Un poste avec droits d’installation pour l’AWS CLI (Windows, macOS ou Linux).
-- Des identifiants IAM non-root si possible (bonne pratique).
 
 ---
 
@@ -79,7 +76,9 @@ Objectif : voir comment exécuter du code sans gérer de serveur.
    - Créez un nouvel évènement de test par défaut et exécutez.
    - Observez le résultat dans les logs (console de sortie, logs CloudWatch).
 
+Ressources :
 
+Code :
 
 ```python
 import os
@@ -121,6 +120,7 @@ def lambda_handler(event, context):
         "body": csv_text
     }
 ```
+Exemple d'event :
 
 ```json
 {
@@ -227,12 +227,12 @@ Dans IAM (console AWS) :
 
 ### 3. Initialiser un profil AWS avec `aws configure`
 
-Nous allons créer un profil nommé par exemple `demo-aws`.
+Nous allons utiliser le profil  `default`.
 
 Dans un terminal :
 
 ```bash
-aws configure --profile demo-aws
+aws configure 
 ```
 
 Répondez aux questions :
@@ -254,7 +254,7 @@ Les informations sont stockées dans :
 Test simple pour confirmer que le profil est bien configuré.
 
 ```bash
-aws sts get-caller-identity --profile demo-aws
+aws sts get-caller-identity
 ```
 
 Vous devriez obtenir un résultat de ce type :
@@ -268,11 +268,11 @@ Autres tests possibles :
 * Lister les buckets S3 :
 
   ```bash
-  aws s3 ls --profile demo-aws
+  aws s3 ls 
   ```
 
 * Lister les fonctions Lambda (dans une région donnée) :
 
   ```bash
-  aws lambda list-functions --region eu-west-1 --profile demo-aws
+  aws lambda list-functions --region eu-west-1
   ```
