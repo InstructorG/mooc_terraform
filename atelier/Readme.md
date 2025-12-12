@@ -144,7 +144,7 @@ module "api_gateway" {
 
 ----
 
-## Partie 3 (Optionnel) : Executer un workflow  CI/CD avec githubaction
+## Partie 3 : Executer un workflow  CI/CD avec GitHub Actions
 
 Dans cette seconde partie, nous allons créer un pipeline CI/CD en utilisant GitHub Actions.
 Ce pipeline nous permettra de simuler une chaîne complète d'intégration continue.
